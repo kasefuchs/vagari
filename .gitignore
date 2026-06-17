@@ -1,0 +1,11 @@
+# --- IDE / Editor ---
+# JetBrains
+.idea/
+*.iml
+
+# VSCode
+.vscode/
+
+# --- Tools ---
+# Vagrant
+.vagrant/
