@@ -33,12 +33,14 @@ class BaseComponent
     assign(target)
   end
 
-  def assign(target, except: [])
+  def options(except: [])
     blacklist = [:kind] + except
 
-    @config.each do |key, value|
-      next if blacklist.include?(key)
+    @config.reject { |key, _| blacklist.include?(key) }
+  end
 
+  def assign(target, except: [])
+    options(except: except).each do |key, value|
       target.public_send("#{key}=", value)
     end
   end
