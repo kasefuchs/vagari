@@ -6,8 +6,10 @@
 require_relative 'lib/config'
 require_relative 'lib/node'
 
+config_path = ENV.fetch('VAGARI_CONFIG', 'config.yaml')
+
 Vagrant.configure('2') do |vagrant|
-  Config.new.nodes.each do |name, config|
+  Config.new(config_path).nodes.each do |name, config|
     Node.new(config, name).apply(vagrant)
   end
 end
