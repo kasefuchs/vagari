@@ -30,12 +30,14 @@ class BaseComponent
   protected
 
   def configure(target)
-    raise NotImplementedError, "#{self.class} must define configure method"
+    assign(target)
   end
 
-  def assign(target, *keys)
-    keys.each do |key|
-      next if (value = @config[key]).nil?
+  def assign(target, except: [])
+    blacklist = [:kind] + except
+
+    @config.each do |key, value|
+      next if blacklist.include?(key)
 
       target.public_send("#{key}=", value)
     end
