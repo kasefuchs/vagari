@@ -9,3 +9,6 @@
 # --- Tools ---
 # Vagrant
 .vagrant/
+
+# --- Artifacts ---
+build/

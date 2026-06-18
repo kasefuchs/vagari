@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+export VAGRANT_CWD="@VAGARI_PATH@"
+export VAGRANT_DOTFILE_PATH="${VAGRANT_DOTFILE_PATH:-$PWD/.vagrant}"
+
+if [[ -f "$1" ]]; then
+  export VAGARI_CONFIG="$(realpath "$1")"
+  shift
+fi
+
+exec vagrant "$@"
