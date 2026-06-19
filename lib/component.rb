@@ -27,6 +27,24 @@ class BaseComponent
     raise NotImplementedError, "#{self.class} must define NAME constant"
   end
 
+  def dsl_method
+    self.class::DSL_METHOD
+  rescue NameError
+    raise NotImplementedError, "#{self.class} must define DSL_METHOD constant"
+  end
+
+  module BlockApply
+    def apply(target, method: dsl_method)
+      target.public_send(method, name) { |t| configure(t) }
+    end
+  end
+
+  module OptionsApply
+    def apply(target, method: dsl_method)
+      target.public_send(method, name, **options)
+    end
+  end
+
   protected
 
   def configure(target)

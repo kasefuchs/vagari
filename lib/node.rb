@@ -6,6 +6,10 @@ require_relative 'provider/base'
 require_relative 'provisioner/base'
 
 class Node < BaseComponent
+  include BaseComponent::BlockApply
+
+  DSL_METHOD = :define
+
   attr_reader :name
 
   def initialize(config, name)
@@ -13,15 +17,11 @@ class Node < BaseComponent
     @name = name
   end
 
-  def apply(target)
-    target.vm.define(name) do |node|
-      configure(node.vm)
-    end
-  end
-
   protected
 
-  def configure(machine)
+  def configure(node)
+    machine = node.vm
+
     BaseProvider.for(config[:provider]).apply(machine)
 
     config.fetch(:networks, []).each do |network_config|

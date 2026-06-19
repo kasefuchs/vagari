@@ -10,6 +10,6 @@ config_path = ENV.fetch('VAGARI_CONFIG', 'config.yaml')
 
 Vagrant.configure('2') do |vagrant|
   Config.new(config_path).nodes.each do |name, config|
-    Node.new(config, name).apply(vagrant)
+    Node.new(config, name).apply(vagrant.vm)
   end
 end
