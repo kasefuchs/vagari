@@ -13,17 +13,15 @@ class Node < BaseComponent
     @name = name
   end
 
-  def apply(vagrant)
-    vagrant.vm.define(name) do |machine|
-      configure(machine)
+  def apply(target)
+    target.vm.define(name) do |node|
+      configure(node.vm)
     end
   end
 
   protected
 
   def configure(machine)
-    assign(machine.vm, except: %i[provider networks provisioners])
-
     BaseProvider.for(config[:provider]).apply(machine)
 
     config.fetch(:networks, []).each do |network_config|
@@ -33,5 +31,7 @@ class Node < BaseComponent
     config.fetch(:provisioners, []).each do |provisioner_config|
       BaseProvisioner.for(provisioner_config).apply(machine)
     end
+
+    assign(machine, except: %i[provider networks provisioners])
   end
 end

@@ -7,7 +7,7 @@ class BaseNetwork < BaseComponent
     super(config, path: __dir__, suffix: 'Network')
   end
 
-  def apply(machine)
-    machine.vm.network(name, **options)
+  def apply(target, method: :network)
+    target.public_send(method, name, **options)
   end
 end

@@ -7,7 +7,7 @@ class BaseProvider < BaseComponent
     super(config, path: __dir__, suffix: 'Provider')
   end
 
-  def apply(machine)
-    machine.vm.provider(name) { |p| configure(p) }
+  def apply(target, method: :provider)
+    target.public_send(method, name) { |p| configure(p) }
   end
 end
