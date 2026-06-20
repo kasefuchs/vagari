@@ -10,8 +10,4 @@ class Config
 
     @data = YAML.safe_load_file(path, aliases: true, symbolize_names: true)
   end
-
-  def nodes
-    @data.fetch(:nodes)
-  end
 end
