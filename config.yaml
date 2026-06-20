@@ -1,10 +1,10 @@
+box: centos/stream9
+providers:
+  - kind: libvirt
+    cpus: 2
+    memory: 2048
 nodes:
   master:
-    box: centos/stream9
-    provider:
-      kind: libvirt
-      cpus: 2
-      memory: 2048
     networks:
       - kind: forwarded_port
         host: 6443

@@ -19,10 +19,12 @@ class Node < BaseComponent
 
   protected
 
-  def configure(node)
-    machine = node.vm
+  def configure(target)
+    machine = target.vm
 
-    BaseProvider.for(config[:provider]).apply(machine)
+    config.fetch(:providers, []).each do |provider_config|
+      BaseProvider.for(provider_config).apply(machine)
+    end
 
     config.fetch(:networks, []).each do |network_config|
       BaseNetwork.for(network_config).apply(machine)
