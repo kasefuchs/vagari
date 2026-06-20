@@ -5,6 +5,7 @@ require_relative '../component'
 class BaseNetwork < BaseComponent
   include BaseComponent::OptionsApply
 
+  DSL_NAMESPACE = :vm
   DSL_METHOD = :network
 
   def self.for(config)

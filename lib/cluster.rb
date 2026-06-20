@@ -6,30 +6,29 @@ require_relative 'node'
 class Cluster < BaseComponent
   include BaseComponent::BlockApply
 
-  NAME = '2'
+  DSL_NAMESPACE = nil
   DSL_METHOD = :configure
+  NAME = '2'
 
   protected
 
   def configure(target)
-    machine = target.vm
-
     config.fetch(:providers, []).each do |provider_config|
-      BaseProvider.for(provider_config).apply(machine)
+      BaseProvider.for(provider_config).apply(target)
     end
 
     config.fetch(:networks, []).each do |network_config|
-      BaseNetwork.for(network_config).apply(machine)
+      BaseNetwork.for(network_config).apply(target)
     end
 
     config.fetch(:provisioners, []).each do |provisioner_config|
-      BaseProvisioner.for(provisioner_config).apply(machine)
+      BaseProvisioner.for(provisioner_config).apply(target)
     end
 
-    assign(machine, except: %i[nodes providers networks provisioners])
+    assign(target.vm, except: %i[nodes providers networks provisioners])
 
     config.fetch(:nodes, {}).each do |name, node_config|
-      Node.new(node_config, name).apply(machine)
+      Node.new(node_config, name).apply(target)
     end
   end
 end

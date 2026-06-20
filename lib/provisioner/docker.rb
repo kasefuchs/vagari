@@ -9,7 +9,7 @@ class DockerProvisioner < BaseProvisioner
 
   def configure(target)
     config.fetch(:post_install_provision, []).each do |provisioner_config|
-      BaseProvisioner.for(provisioner_config).apply(target, method: :post_install_provision)
+      BaseProvisioner.for(provisioner_config).apply(target, method: :post_install_provision, namespace: nil)
     end
 
     config.fetch(:run, {}).each do |name, options|

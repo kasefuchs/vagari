@@ -21,27 +21,25 @@ class BaseComponent
     Object.const_get(class_name).new(config)
   end
 
-  def name
-    self.class::NAME
-  rescue NameError
-    raise NotImplementedError, "#{self.class} must define NAME constant"
-  end
-
-  def dsl_method
-    self.class::DSL_METHOD
-  rescue NameError
-    raise NotImplementedError, "#{self.class} must define DSL_METHOD constant"
+  %i[NAME DSL_METHOD DSL_NAMESPACE].each do |const|
+    define_method(const.to_s.downcase) do
+      self.class.const_get(const)
+    rescue NameError
+      raise NotImplementedError, "#{self.class} must define #{const} constant"
+    end
   end
 
   module BlockApply
-    def apply(target, method: dsl_method)
-      target.public_send(method, name) { |t| configure(t) }
+    def apply(target, method: dsl_method, namespace: dsl_namespace)
+      receiver = namespace.nil? ? target : target.public_send(namespace)
+      receiver.public_send(method, name) { |t| configure(t) }
     end
   end
 
   module OptionsApply
-    def apply(target, method: dsl_method)
-      target.public_send(method, name, **options)
+    def apply(target, method: dsl_method, namespace: dsl_namespace)
+      receiver = namespace.nil? ? target : target.public_send(namespace)
+      receiver.public_send(method, name, **options)
     end
   end
 

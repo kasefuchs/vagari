@@ -5,6 +5,7 @@ require_relative '../component'
 class BaseProvider < BaseComponent
   include BaseComponent::BlockApply
 
+  DSL_NAMESPACE = :vm
   DSL_METHOD = :provider
 
   def self.for(config)

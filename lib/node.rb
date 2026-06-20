@@ -8,6 +8,7 @@ require_relative 'provisioner/base'
 class Node < BaseComponent
   include BaseComponent::BlockApply
 
+  DSL_NAMESPACE = :vm
   DSL_METHOD = :define
 
   attr_reader :name
@@ -20,20 +21,18 @@ class Node < BaseComponent
   protected
 
   def configure(target)
-    machine = target.vm
-
     config.fetch(:providers, []).each do |provider_config|
-      BaseProvider.for(provider_config).apply(machine)
+      BaseProvider.for(provider_config).apply(target)
     end
 
     config.fetch(:networks, []).each do |network_config|
-      BaseNetwork.for(network_config).apply(machine)
+      BaseNetwork.for(network_config).apply(target)
     end
 
     config.fetch(:provisioners, []).each do |provisioner_config|
-      BaseProvisioner.for(provisioner_config).apply(machine)
+      BaseProvisioner.for(provisioner_config).apply(target)
     end
 
-    assign(machine, except: %i[provider networks provisioners])
+    assign(target.vm, except: %i[providers networks provisioners])
   end
 end
