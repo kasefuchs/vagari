@@ -8,20 +8,27 @@ class BaseComponent
   end
 
   def self.for(config, path:, suffix:)
-    kind = config[:kind]
+    kind = config[:kind].to_s
     file_path = File.expand_path("#{kind}.rb", path)
 
-    raise "Module for '#{kind}' doesn't exist" unless File.exist?(file_path)
+    if File.exist?(file_path)
+      require file_path
 
-    require file_path
+      class_name = "#{kind.split('_').map(&:capitalize).join}#{suffix}"
+      return Object.const_get(class_name).new(config) if Object.const_defined?(class_name)
+    end
 
-    class_name = "#{kind.split('_').map(&:capitalize).join}#{suffix}"
-    raise "Class '#{class_name}' not defined" unless Object.const_defined?(class_name)
-
-    Object.const_get(class_name).new(config)
+    new(config)
   end
 
-  %i[NAME DSL_METHOD DSL_NAMESPACE].each do |const|
+  def name
+    return self.class::NAME if self.class.const_defined?(:NAME)
+    return @config[:kind].to_sym if @config[:kind]
+
+    raise NotImplementedError, "#{self.class} must define NAME constant or config must include :kind"
+  end
+
+  %i[DSL_METHOD DSL_NAMESPACE].each do |const|
     define_method(const.to_s.downcase) do
       self.class.const_get(const)
     rescue NameError
@@ -51,7 +58,6 @@ class BaseComponent
 
   def options(except: [])
     blacklist = [:kind] + except
-
     @config.reject { |key, _| blacklist.include?(key) }
   end
 
