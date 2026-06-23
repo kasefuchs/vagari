@@ -6,7 +6,7 @@
 require_relative 'lib/config'
 require_relative 'lib/cluster'
 
-config_path = ENV.fetch('VAGARI_CONFIG', 'config.yaml')
+config_path = ENV.fetch('VAGARI_CONFIG', 'cluster.yaml')
 
 config = Config.new(config_path)
 

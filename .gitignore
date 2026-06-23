@@ -1,10 +1,9 @@
 # --- IDE / Editor ---
-# JetBrains
+.zed/
+.gram/
 .idea/
-*.iml
-
-# VSCode
 .vscode/
+*.iml
 
 # --- Tools ---
 # Vagrant

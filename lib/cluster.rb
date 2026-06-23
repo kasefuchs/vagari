@@ -8,9 +8,12 @@ class Cluster < BaseComponent
 
   DSL_NAMESPACE = nil
   DSL_METHOD = :configure
-  NAME = '2'
 
   protected
+
+  def positional
+    ['2']
+  end
 
   def configure(target)
     config.fetch(:providers, []).each do |provider_config|

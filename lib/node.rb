@@ -20,6 +20,10 @@ class Node < BaseComponent
 
   protected
 
+  def positional
+    [@name.to_s]
+  end
+
   def configure(target)
     config.fetch(:providers, []).each do |provider_config|
       BaseProvider.for(provider_config).apply(target)

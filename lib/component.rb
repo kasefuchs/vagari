@@ -21,11 +21,26 @@ class BaseComponent
     new(config)
   end
 
-  def name
-    return self.class::NAME if self.class.const_defined?(:NAME)
-    return @config[:kind].to_sym if @config[:kind]
+  module BlockApply
+    def apply(target, method: dsl_method, namespace: dsl_namespace)
+      receiver = namespace.nil? ? target : target.public_send(namespace)
+      receiver.public_send(method, *positional) { |t| configure(t) }
+    end
+  end
 
-    raise NotImplementedError, "#{self.class} must define NAME constant or config must include :kind"
+  module OptionsApply
+    def apply(target, method: dsl_method, namespace: dsl_namespace)
+      receiver = namespace.nil? ? target : target.public_send(namespace)
+      receiver.public_send(method, *positional, **options)
+    end
+  end
+
+  protected
+
+  def positional
+    return [@config[:kind].to_sym] if @config[:kind]
+
+    raise NotImplementedError, "#{self.class} must define #positional or config must include :kind"
   end
 
   %i[DSL_METHOD DSL_NAMESPACE].each do |const|
@@ -35,22 +50,6 @@ class BaseComponent
       raise NotImplementedError, "#{self.class} must define #{const} constant"
     end
   end
-
-  module BlockApply
-    def apply(target, method: dsl_method, namespace: dsl_namespace)
-      receiver = namespace.nil? ? target : target.public_send(namespace)
-      receiver.public_send(method, name) { |t| configure(t) }
-    end
-  end
-
-  module OptionsApply
-    def apply(target, method: dsl_method, namespace: dsl_namespace)
-      receiver = namespace.nil? ? target : target.public_send(namespace)
-      receiver.public_send(method, name, **options)
-    end
-  end
-
-  protected
 
   def configure(target)
     assign(target)
