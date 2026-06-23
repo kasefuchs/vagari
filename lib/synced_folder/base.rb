@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+require_relative '../component'
+
+class BaseSyncedFolder < BaseComponent
+  include BaseComponent::OptionsApply
+
+  DSL_NAMESPACE = :vm
+  DSL_METHOD = :synced_folder
+
+  def self.for(config)
+    super(config, path: __dir__, suffix: 'SyncedFolder')
+  end
+
+  protected
+
+  def ignored
+    %i[host guest]
+  end
+
+  def positional
+    [@config.fetch(:host), @config.fetch(:guest)]
+  end
+end

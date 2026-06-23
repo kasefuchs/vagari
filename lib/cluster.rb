@@ -2,6 +2,10 @@
 
 require_relative 'component'
 require_relative 'node'
+require_relative 'network/base'
+require_relative 'provider/base'
+require_relative 'provisioner/base'
+require_relative 'synced_folder/base'
 
 class Cluster < BaseComponent
   include BaseComponent::BlockApply
@@ -10,6 +14,10 @@ class Cluster < BaseComponent
   DSL_METHOD = :configure
 
   protected
+
+  def ignored
+    super + %i[nodes providers networks provisioners synced_folders]
+  end
 
   def positional
     ['2']
@@ -28,7 +36,9 @@ class Cluster < BaseComponent
       BaseProvisioner.for(provisioner_config).apply(target)
     end
 
-    assign(target.vm, except: %i[nodes providers networks provisioners])
+    config.fetch(:synced_folders, []).each do |sync_config|
+      BaseSyncedFolder.for(sync_config).apply(target)
+    end
 
     config.fetch(:nodes, {}).each do |name, node_config|
       Node.new(node_config, name).apply(target)

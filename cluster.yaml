@@ -1,4 +1,5 @@
-box: centos/stream9
+vm:
+  box: centos/stream9
 providers:
   - type: libvirt
     cpus: 2

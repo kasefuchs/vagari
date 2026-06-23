@@ -4,6 +4,7 @@ require_relative 'component'
 require_relative 'network/base'
 require_relative 'provider/base'
 require_relative 'provisioner/base'
+require_relative 'synced_folder/base'
 
 class Node < BaseComponent
   include BaseComponent::BlockApply
@@ -19,6 +20,10 @@ class Node < BaseComponent
   end
 
   protected
+
+  def ignored
+    super + %i[providers networks provisioners synced_folders]
+  end
 
   def positional
     [@name.to_s]
@@ -37,6 +42,8 @@ class Node < BaseComponent
       BaseProvisioner.for(provisioner_config).apply(target)
     end
 
-    assign(target.vm, except: %i[providers networks provisioners])
+    config.fetch(:synced_folders, []).each do |sync_config|
+      BaseSyncedFolder.for(sync_config).apply(target)
+    end
   end
 end
