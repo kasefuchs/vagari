@@ -1,18 +1,18 @@
 box: centos/stream9
 providers:
-  - kind: libvirt
+  - type: libvirt
     cpus: 2
     memory: 2048
 nodes:
   master:
     networks:
-      - kind: forwarded_port
+      - type: forwarded_port
         host: 6443
         guest: 6443
     provisioners:
-      - kind: shell
+      - type: shell
         inline: |
           sudo swapoff -a
           sudo sed -i -r '/^[^#].+\s+swap\s+/ s/^/# /' /etc/fstab
-      - kind: k3s
-      - kind: docker
+      - type: k3s
+      - type: docker

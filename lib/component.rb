@@ -8,13 +8,13 @@ class BaseComponent
   end
 
   def self.for(config, path:, suffix:)
-    kind = config[:kind].to_s
-    file_path = File.expand_path("#{kind}.rb", path)
+    type = config[:type].to_s
+    file_path = File.expand_path("#{type}.rb", path)
 
     if File.exist?(file_path)
       require file_path
 
-      class_name = "#{kind.split('_').map(&:capitalize).join}#{suffix}"
+      class_name = "#{type.split('_').map(&:capitalize).join}#{suffix}"
       return Object.const_get(class_name).new(config) if Object.const_defined?(class_name)
     end
 
@@ -38,9 +38,9 @@ class BaseComponent
   protected
 
   def positional
-    return [@config[:kind].to_sym] if @config[:kind]
+    return [@config[:type].to_sym] if @config[:type]
 
-    raise NotImplementedError, "#{self.class} must define #positional or config must include :kind"
+    raise NotImplementedError, "#{self.class} must define #positional or config must include :type"
   end
 
   %i[DSL_METHOD DSL_NAMESPACE].each do |const|
@@ -56,7 +56,7 @@ class BaseComponent
   end
 
   def options(except: [])
-    blacklist = [:kind] + except
+    blacklist = [:type] + except
     @config.reject { |key, _| blacklist.include?(key) }
   end
 
