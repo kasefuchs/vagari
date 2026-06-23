@@ -3,11 +3,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require_relative 'lib/config'
 require_relative 'lib/cluster'
+require_relative 'lib/context'
 
-config_path = ENV.fetch('VAGARI_CONFIG', 'cluster.yaml')
-
-config = Config.new(config_path)
-
-Cluster.new(config.data).apply(Vagrant)
+Cluster.new(Context.new.config).apply(Vagrant)

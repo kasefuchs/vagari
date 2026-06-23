@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../component'
+require_relative '../context'
 
 class BaseSyncedFolder < BaseComponent
   include BaseComponent::OptionsApply
@@ -19,6 +20,6 @@ class BaseSyncedFolder < BaseComponent
   end
 
   def positional
-    [@config.fetch(:host), @config.fetch(:guest)]
+    [Context.resolve(@config.fetch(:host)), @config.fetch(:guest)]
   end
 end

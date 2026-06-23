@@ -65,13 +65,13 @@ class BaseComponent
     @config.reject { |key, _| blacklist.include?(key) }
   end
 
-  def assign(target, except: [])
-    options(except: except).each do |key, value|
-      if value.is_a?(Hash)
-        namespace = target.public_send(key)
-        value.each do |nested_key, nested_value|
-          namespace.public_send("#{nested_key}=", nested_value)
-        end
+  def assign(target, properties = nil, except: [])
+    properties ||= options(except: except)
+
+    properties.each do |key, value|
+      if value.is_a?(Hash) && !target.respond_to?("#{key}=")
+        nested_target = target.public_send(key)
+        assign(nested_target, value)
       else
         target.public_send("#{key}=", value)
       end
