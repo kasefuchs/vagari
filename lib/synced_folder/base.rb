@@ -20,6 +20,9 @@ class BaseSyncedFolder < BaseComponent
   end
 
   def positional
-    [Context.resolve(@config.fetch(:host)), @config.fetch(:guest)]
+    [
+      Context.resolve(@config.fetch(:host)),
+      @config.fetch(:guest)
+    ]
   end
 end
